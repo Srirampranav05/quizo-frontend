@@ -4,7 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import QuestionPage from "./pages/QuestionPage";
 
 const AppRoutes = () => {
-  const isAdmin = localStorage.getItem("admin") === "true"; // ✅ Fix admin check
+  const isAdmin = localStorage.getItem("admin") === "true"; // ✅ Check if logged in
 
   return (
     <Router>
