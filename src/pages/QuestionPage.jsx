@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Sidebar from "../components/Sidebar"; // ✅ Import Sidebar
 
+const API_BASE_URL = "https://quizo-backend-production.up.railway.app";
+
 const QuestionPage = () => {
   const [quizzes, setQuizzes] = useState([]); // Stores quizzes
   const [selectedQuiz, setSelectedQuiz] = useState(null); // Selected quiz
@@ -12,16 +14,16 @@ const QuestionPage = () => {
   const [correctOption, setCorrectOption] = useState(""); // Correct option
 
   useEffect(() => {
-    axios.get("http://localhost:5000/quizzes")
+    axios.get(`${API_BASE_URL}/quizzes`)
       .then((res) => setQuizzes(res.data))
-      .catch((err) => console.error(err));
+      .catch((err) => console.error("Error fetching quizzes:", err));
   }, []);
 
   const fetchQuestions = (quizId) => {
     setSelectedQuiz(quizId);
-    axios.get(`http://localhost:5000/quiz/${quizId}/questions`)
+    axios.get(`${API_BASE_URL}/quiz/${quizId}/questions`)
       .then((res) => setQuestions(res.data))
-      .catch((err) => console.error(err));
+      .catch((err) => console.error("Error fetching questions:", err));
   };
 
   // ✅ Add a new question
@@ -31,13 +33,16 @@ const QuestionPage = () => {
     }
 
     try {
-      await axios.post(`http://localhost:5000/quiz/${selectedQuiz}/questions`, {
+      const response = await axios.post(`${API_BASE_URL}/quiz/${selectedQuiz}/questions`, {
         text: newQuestion,
-        options: newOptions,
+        options: newOptions, // ✅ Ensure options are stored correctly
         correctOption
       });
+      setQuestions([...questions, response.data]); // ✅ Instantly update UI
       setShowModal(false);
-      fetchQuestions(selectedQuiz); // Refresh questions after adding
+      setNewQuestion("");
+      setNewOptions(["", "", "", ""]);
+      setCorrectOption("");
     } catch (err) {
       console.error("Failed to add question:", err);
     }
@@ -46,8 +51,8 @@ const QuestionPage = () => {
   // ✅ Delete a question
   const handleDeleteQuestion = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/question/${id}`);
-      setQuestions(questions.filter((q) => q.id !== id)); // Instantly remove from UI
+      await axios.delete(`${API_BASE_URL}/question/${id}`);
+      setQuestions(questions.filter((q) => q.id !== id)); // ✅ Instantly update UI
     } catch (err) {
       console.error("Failed to delete question:", err);
     }
@@ -105,7 +110,7 @@ const QuestionPage = () => {
         <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
             <h2 className="text-xl font-bold mb-4">Add New Question</h2>
-            
+
             <input
               type="text"
               placeholder="Question"

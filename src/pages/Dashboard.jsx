@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import QuizCard from "../components/QuizCard";
-import Sidebar from "../components/Sidebar"; // ✅ Import Sidebar
+import Sidebar from "../components/Sidebar";
+import { API_BASE_URL } from "../config"; // ✅ Import API base URL
 
 const Dashboard = () => {
   const [quizzes, setQuizzes] = useState([]);
@@ -15,24 +16,22 @@ const Dashboard = () => {
     fetchQuizzes();
   }, []);
 
-  const fetchQuizzes = () => {
-    axios
-      .get("http://localhost:5000/quizzes")
-      .then((res) => {
-        setQuizzes(res.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError("Failed to load quizzes. Try again later.");
-        setLoading(false);
-      });
+  const fetchQuizzes = async () => {
+    try {
+      const res = await axios.get(`${API_BASE_URL}/quizzes`);
+      setQuizzes(res.data);
+      setLoading(false);
+    } catch (err) {
+      setError("Failed to load quizzes. Try again later.");
+      setLoading(false);
+    }
   };
 
   const handleCreateQuiz = async () => {
     if (!newTitle || !newDescription) return alert("All fields are required!");
 
     try {
-      await axios.post("http://localhost:5000/quiz", {
+      await axios.post(`${API_BASE_URL}/quiz`, {
         title: newTitle,
         description: newDescription,
       });
@@ -45,7 +44,7 @@ const Dashboard = () => {
 
   return (
     <div className="flex">
-      <Sidebar /> {/* ✅ Sidebar added */}
+      <Sidebar />
 
       <div className="w-4/5 p-4">
         <h1 className="text-2xl font-bold mb-4">Available Quizzes</h1>

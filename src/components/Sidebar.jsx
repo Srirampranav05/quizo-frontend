@@ -5,10 +5,10 @@ const Sidebar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("admin"); // ✅ Clear admin login state
-    localStorage.removeItem("token"); // ✅ Clear token
-    navigate("/", { replace: true }); // ✅ Redirect to login page
-    window.location.reload(); // ✅ Ensure full session reset
+    localStorage.removeItem("admin");
+    localStorage.removeItem("token");
+    navigate("/", { replace: true });
+    window.location.reload(); // ✅ Ensures session reset
   };
 
   return (

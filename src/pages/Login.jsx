@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_BASE_URL } from "../config"; // ✅ Import API base URL
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -10,16 +11,16 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(""); // ✅ Reset error state before new attempt
+    setError("");
 
     try {
-      const res = await axios.post("http://localhost:5000/admin-login", { email, password });
+      const res = await axios.post(`${API_BASE_URL}/admin-login`, { email, password });
 
       if (res.data.admin) {
-        localStorage.setItem("admin", "true"); // ✅ Store admin status
-        localStorage.setItem("token", res.data.token); // ✅ Store dummy token for session tracking
-        navigate("/dashboard"); // ✅ Redirect to Dashboard
-        window.location.reload(); // ✅ Force refresh to apply state changes
+        localStorage.setItem("admin", "true");
+        localStorage.setItem("token", res.data.token);
+        navigate("/dashboard");
+        window.location.reload();
       } else {
         setError("Invalid credentials! Try again.");
       }
@@ -66,4 +67,3 @@ const Login = () => {
 };
 
 export default Login;
-          
