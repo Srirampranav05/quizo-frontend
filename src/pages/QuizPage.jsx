@@ -3,8 +3,6 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import QuestionCard from "../components/QuestionCard";
 
-const API_BASE_URL = "https://quizo-backend-production.up.railway.app";
-
 const QuizPage = () => {
   const { id } = useParams();
   const [questions, setQuestions] = useState([]);
@@ -16,7 +14,7 @@ const QuizPage = () => {
     setError("");
 
     axios
-      .get(`${API_BASE_URL}/quiz/${id}/questions`)
+      .get(`${import.meta.env.VITE_API_BASE_URL}/quiz/${id}/questions`)
       .then((res) => {
         setQuestions(res.data);
         setLoading(false);
